@@ -1,0 +1,22 @@
+body{
+    font-family:'Courier New', Courier, monospace;
+    background-color:rgb(233, 241, 252);
+}
+
+#title{
+    padding: .5em;
+    padding-bottom: 0em;
+}
+
+#subtitle{
+    padding-left: 2em;
+}
+
+#mileage{
+    height: 100px;
+}
+
+#route_map{
+    padding: .25em;
+    height: 400px;
+}
