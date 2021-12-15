@@ -15,7 +15,7 @@ app.use(express.static("public"))
 //API call that sends an HTTP GET request
 app.get('/activities/after/:after', (req, res) => {
     //using axios to send an XMLHttpRequest with an authorization header
-    axios.get(athlete_link + "&after=" + req.params["after"], {headers: {"Authorization": "Bearer 12e6e48057ef4b70c755b79a25a8811a792a90a7"}})
+    axios.get(athlete_link + "&after=" + req.params["after"], {headers: {"Authorization": "Bearer 31ba4aa81ea4dafd482617069405c99c24afa752"}})
         //once the Promise has been fulfilled, send the axios HTTP response to the response object within the express HTTP request
         .then(response => {
             console.log(response.data)

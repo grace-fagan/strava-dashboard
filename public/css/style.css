@@ -1,15 +1,7 @@
 body{
     font-family:'Courier New', Courier, monospace;
     background-color:rgb(233, 241, 252);
-}
-
-#title{
-    padding: .5em;
-    padding-bottom: 0em;
-}
-
-#subtitle{
-    padding-left: 2em;
+    margin: 25px;
 }
 
 #mileage{
@@ -17,6 +9,6 @@ body{
 }
 
 #route_map{
-    padding: .25em;
+    padding: 1em;
     height: 400px;
 }

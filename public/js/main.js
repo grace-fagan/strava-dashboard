@@ -21,14 +21,19 @@ function selectTimeline(time){
 
     const host = window.location
 
-    let request = new XMLHttpRequest();
-    request.open("GET", host + "activities/after/" + after, true)
+    let request_1 = new XMLHttpRequest();
+    request_1.open("GET", host + "activities/after/" + after, true)
 
     //once the response from the server is received, grab the data and create the vis
-    request.onload = function loadData() {
+    request_1.onload = function loadData() {
+
+        // let request_2 = new XMLHttpRequest();
+        // request_2.open("GET", host + "activities/after/")
+        
         let data = JSON.parse(this.response);
+        console.log("YTD: ", data);
         createMap(data);
     }
 
-    request.send();
+    request_1.send();
 }
