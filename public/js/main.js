@@ -1,39 +1,89 @@
-//Based on user query, send HTTP GET request to retrieve activities from given timeline
-function selectTimeline(time){
-    
-    let after = new Date();
+function getTime(timeframe) {
+    console.log("Timeframe: ", timeframe);
+    let afterValue = new Date();
 
     //convert time to epoch value
-    switch(time){
-        case "week":
+    switch(timeframe){
+        case "Week":
             let monday = new Date();
             monday.setDate(monday.getDate() - monday.getDay() + 1)
-            after = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate(), 0).getTime() / 1000;
+            afterValue = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate(), 0).getTime() / 1000;
             break;
         
-        case "month":
-            after = new Date(after.getFullYear(), after.getMonth(), 1, 0).getTime() / 1000;
+        case "Month":
+            afterValue = new Date(afterValue.getFullYear(), afterValue.getMonth(), 1, 0).getTime() / 1000;
             break;
         
-        case "year":
-            after = new Date(after.getFullYear(), 0, 1, 0).getTime() / 1000;
+        case "Year":
+            afterValue = new Date(afterValue.getFullYear(), 0, 1, 0).getTime() / 1000;
     }
-
-    const host = window.location
-
-    let request_1 = new XMLHttpRequest();
-    request_1.open("GET", host + "activities/after/" + after, true)
-
-    //once the response from the server is received, grab the data and create the vis
-    request_1.onload = function loadData() {
-
-        // let request_2 = new XMLHttpRequest();
-        // request_2.open("GET", host + "activities/after/")
-        
-        let data = JSON.parse(this.response);
-        console.log("YTD: ", data);
-        createMap(data);
-    }
-
-    request_1.send();
+    console.log("after: ", afterValue)
+    return afterValue;
 }
+
+let routeMap = {
+    template: '#route-map-template',
+    data() {
+        return {
+            accessToken: 'pk.eyJ1IjoiZ3JhY2VmYWdhbiIsImEiOiJja3gyNmFlY3gwZzFtMnBtdWtzcDYxbmk5In0.XGxf9wDcKw_kxESf6FgaOQ'
+        };
+    },
+    mounted() {
+
+    }
+}
+
+//Local list component
+let runsList = {
+    template: "#runs-list-template",
+    components: {
+        'route-map': routeMap
+    },
+    props: {
+        after: Number
+    },
+    data: function() {
+        return {
+            runs: []
+        }
+    },
+    watch: {
+        after() {
+            axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + this.after, {headers: {"Authorization": "Bearer 321516dfebd054cc24c7f3ee35ba6ac82e9b1930"}})
+                .then(response => {
+                    this.runs = response.data;
+                    createMap(response.data)});
+        }
+    }, mounted() {
+        axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + this.after, {headers: {"Authorization": "Bearer 321516dfebd054cc24c7f3ee35ba6ac82e9b1930"}})
+            .then(response => (this.runs = response.data))
+    } 
+}
+
+// Local timeframe selector component
+let timeframeSelector = {
+    template: "#timeframe-selector-template",
+    components: {
+        'runs-list': runsList
+    },
+    data() {
+        return {
+            selectedTime: 'Week',
+            options: [
+                'Week',
+                'Month',
+                'Year'
+            ]
+        };
+    },
+    computed: {
+        after() {return getTime(this.selectedTime)}
+    }
+}
+
+new Vue({
+    el: '#app',
+    components: {
+        'timeframe-selector': timeframeSelector,
+    }
+})

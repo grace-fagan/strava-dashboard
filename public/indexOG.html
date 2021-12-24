@@ -18,56 +18,37 @@
     <!-- Using a CDN to access Vue.js package -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
-    <!-- Using a CDN to access axios package -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-</head>
-<body>
-
-    <div class="container-fluid" id="app">
-            <div class="row h5" id="title">Dash! ヽ( •_)ᕗ</div>
-            <small class="row" id="subtitle">~A data visualization tool for running nerds~</small>
-
-            <timeframe-selector></timeframe-selector>
-            
-
-    </div>
-
-<!-- Timeframe selector component template -->
-<script type="text/x-template" id="timeframe-selector-template">
-    <div>
-    <div class="row justify-content-md-center">
-        <label>Timeframe:</label>
-        <select v-model="selectedTime" name="timeline">
-            <option disabled value="">Select</option>
-            <option v-for="option in options" :value="option">{{option}}</option>
-        </select>
-    </div>
-    <div>
-        <runs-list :after="after"></runs-list>
-    </div>
-    </div>
-</script>
-
-<!-- List of runs component template -->
-<script type="text/x-template" id="runs-list-template">
-    <div class="row justify-content-md-center">
-        <div class="col-md-6" id="runs-list">
-            <p>List of Runs:</p>
-            <li v-for="run in runs">{{run.name}}</li>
-        </div>
-        <div class="col-md-6" id="route-map"></div>
-    </div>
-</script>
-
-<script type="text/x-template" id="route-map-template">
-</script>
-
-    <!-- client side JS files -->
     <script src="js/polyline.js"></script>
     <script src="js/main.js"></script>
     <script src="js/map.js"></script>
     <script src="js/list.js"></script>
+
+</head>
+<body>
+
+    <div class="container-fluid" id="main">
+            <div class="row h5" id="title">Dash! ヽ( •_)ᕗ</div>
+            <small class="row" id="subtitle">~A data visualization tool for running nerds~</small>
+
+            <div class="row justify-content-md-center">
+                <label for="TIME">Timeline:</label>
+                <select name="timeline" onchange="selectTimeline(this.value)">
+                    <option value="null">null</option>
+                    <option value="month">Month</option>
+                    <option value="week">Week</option>
+                    <option value="year">Year</option>
+                </select>
+            </div>
+
+            <div class="row" id="mileage">mileage by week or month</div>
+            <div class="row justify-content-md-center">
+                <div class = "col-md-6" id="list">
+                    <li v-for="run in runs">{{run.name}}</li>
+                </div>
+                <div class="col-md-6" id="route_map"></div>
+            </div>
+    </div>
 
 </body>
 </html>

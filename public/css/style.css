@@ -8,6 +8,10 @@ body{
     height: 100px;
 }
 
+#runs-list {
+    height: 400px;
+}
+
 #route_map{
     padding: 1em;
     height: 400px;
