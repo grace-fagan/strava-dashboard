@@ -21,24 +21,12 @@ function getTime(timeframe) {
     return afterValue;
 }
 
-let routeMap = {
-    template: '#route-map-template',
-    data() {
-        return {
-            accessToken: 'pk.eyJ1IjoiZ3JhY2VmYWdhbiIsImEiOiJja3gyNmFlY3gwZzFtMnBtdWtzcDYxbmk5In0.XGxf9wDcKw_kxESf6FgaOQ'
-        };
-    },
-    mounted() {
-
-    }
-}
-
 //Local list component
 let runsList = {
     template: "#runs-list-template",
-    components: {
-        'route-map': routeMap
-    },
+    // components: {
+    //     'route-map': routeMap
+    // },
     props: {
         after: Number
     },

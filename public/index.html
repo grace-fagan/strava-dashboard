@@ -29,14 +29,13 @@
             <small class="row" id="subtitle">~A data visualization tool for running nerds~</small>
 
             <timeframe-selector></timeframe-selector>
-            
-
+    
     </div>
 
 <!-- Timeframe selector component template -->
 <script type="text/x-template" id="timeframe-selector-template">
     <div>
-    <div class="row justify-content-md-center">
+    <div class="row justify-content-md-center" id="timeline">
         <label>Timeframe:</label>
         <select v-model="selectedTime" name="timeline">
             <option disabled value="">Select</option>

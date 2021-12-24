@@ -4,8 +4,8 @@ body{
     margin: 25px;
 }
 
-#mileage{
-    height: 100px;
+#timeline{
+    padding: 25px;
 }
 
 #runs-list {
