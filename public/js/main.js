@@ -4,48 +4,80 @@ function getTime(timeframe) {
 
     //convert time to epoch value
     switch(timeframe){
-        case "Week":
-            let monday = new Date();
-            monday.setDate(monday.getDate() - monday.getDay() + 1)
-            afterValue = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate(), 0).getTime() / 1000;
+        case "week":
+            //sets the after value to the most recent Monday at midnight
+            let today = new Date();
+            today.setDate(today.getDate() - (today.getDay() + 6) % 7)
+            afterValue = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0).getTime() / 1000;
             break;
         
-        case "Month":
+        case "month":
             afterValue = new Date(afterValue.getFullYear(), afterValue.getMonth(), 1, 0).getTime() / 1000;
             break;
         
-        case "Year":
+        case "year":
             afterValue = new Date(afterValue.getFullYear(), 0, 1, 0).getTime() / 1000;
     }
     console.log("after: ", afterValue)
     return afterValue;
 }
 
-//Local list component
-let runsList = {
-    template: "#runs-list-template",
-    // components: {
-    //     'route-map': routeMap
-    // },
+function getData(obj){
+    axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + obj.after, {headers: {"Authorization": "Bearer 97ef98f0c80fba7e05a0595a7801e25fa17ce6f1"}})
+    .then(response => {
+        obj.runs = (response.data);
+        obj.count = response.data.length;
+        createMap(response.data)});
+}
+
+//Local single run component
+let singleRun = {
+    template:"#single-run-template",
     props: {
-        after: Number
+        data: Object
     },
     data: function() {
         return {
-            runs: []
+            clicked: false
+        }
+    },
+    methods:{
+        getMiles(dist){
+            return Math.round(dist * 0.000621371192)
+        },
+        runClicked(run){
+            route_arr.forEach((e) => {
+                if (e.options.name == run.name) {
+                    map.fitBounds(e.getBounds());
+                    e.setStyle({opacity: '1', color: 'red'})
+                } else {e.setStyle({opacity: '.4', color: 'purple'})}
+            })
+        }
+    }
+}
+
+//Local list component
+let runsList = {
+    template: "#runs-list-template",
+    props: {
+        after: Number,
+        timeframe: String
+    },
+    components: {
+        'single-run': singleRun
+    },
+    data: function() {
+        return {
+            runs: [],
+            count: null
         }
     },
     watch: {
-        after() {
-            axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + this.after, {headers: {"Authorization": "Bearer 321516dfebd054cc24c7f3ee35ba6ac82e9b1930"}})
-                .then(response => {
-                    this.runs = response.data;
-                    createMap(response.data)});
-        }
-    }, mounted() {
-        axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + this.after, {headers: {"Authorization": "Bearer 321516dfebd054cc24c7f3ee35ba6ac82e9b1930"}})
-            .then(response => (this.runs = response.data))
-    } 
+        after() {getData(this)}
+    },
+    methods: {
+
+    }, mounted() {getData(this)} 
 }
 
 // Local timeframe selector component
@@ -56,11 +88,11 @@ let timeframeSelector = {
     },
     data() {
         return {
-            selectedTime: 'Week',
+            selectedTime: 'week',
             options: [
-                'Week',
-                'Month',
-                'Year'
+                'week',
+                'month',
+                'year'
             ]
         };
     },

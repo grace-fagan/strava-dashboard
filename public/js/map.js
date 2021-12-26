@@ -35,7 +35,7 @@ function createMap(data) {
 function add_route(run, index){
     if (!run.map.summary_polyline) return;
     let decoded = polyline.decode(run.map.summary_polyline)
-    let route = L.polyline(decoded, {color: 'purple', opacity: '.3', weight: '3'}).addTo(map);
+    let route = L.polyline(decoded, {name: run.name, color: 'purple', opacity: '.3', weight: '3'}).addTo(map);
     console.log("route: ", route);
 
     route_arr[index] = route;

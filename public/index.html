@@ -43,7 +43,7 @@
         </select>
     </div>
     <div>
-        <runs-list :after="after"></runs-list>
+        <runs-list :after="after" :timeframe="selectedTime"></runs-list>
     </div>
     </div>
 </script>
@@ -51,22 +51,24 @@
 <!-- List of runs component template -->
 <script type="text/x-template" id="runs-list-template">
     <div class="row justify-content-md-center">
-        <div class="col-md-6" id="runs-list">
-            <p>List of Runs:</p>
-            <li v-for="run in runs">{{run.name}}</li>
+        <div class="col-md-4" id="runs-list">
+            <p>You ran <strong>{{count}}</strong> times this {{timeframe}}:</p>
+            <single-run v-for="run in runs" :data="run"></single-run>>
         </div>
-        <div class="col-md-6" id="route-map"></div>
+        <div class="col-md-8" id="route-map"></div>
     </div>
 </script>
 
-<script type="text/x-template" id="route-map-template">
+<!-- Single run component template -->
+<script type="text/x-template" id="single-run-template">
+    <div @click="runClicked(data)">{{data.name}} ({{getMiles(data.distance)}}mi)</div>
 </script>
 
-    <!-- client side JS files -->
-    <script src="js/polyline.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/list.js"></script>
+<!-- client side JS files -->
+<script src="js/polyline.js"></script>
+<script src="js/main.js"></script>
+<script src="js/map.js"></script>
+<script src="js/list.js"></script>
 
 </body>
 </html>
