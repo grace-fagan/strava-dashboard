@@ -23,7 +23,7 @@ function getTime(timeframe) {
 }
 
 function getData(obj){
-    axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + obj.after, {headers: {"Authorization": "Bearer 97ef98f0c80fba7e05a0595a7801e25fa17ce6f1"}})
+    axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + obj.after, {headers: {"Authorization": "Bearer c0ed1ce7ec31997cae64cee55fe6e31f6602afe2"}})
     .then(response => {
         obj.runs = (response.data);
         obj.count = response.data.length;
@@ -34,24 +34,24 @@ function getData(obj){
 let singleRun = {
     template:"#single-run-template",
     props: {
-        data: Object
-    },
-    data: function() {
-        return {
-            clicked: false
-        }
+        data: Object,
+        selectedRun: String
     },
     methods:{
         getMiles(dist){
             return Math.round(dist * 0.000621371192)
         },
-        runClicked(run){
-            route_arr.forEach((e) => {
-                if (e.options.name == run.name) {
-                    map.fitBounds(e.getBounds());
-                    e.setStyle({opacity: '1', color: 'red'})
-                } else {e.setStyle({opacity: '.4', color: 'purple'})}
-            })
+        select() {
+            if (this.data.name == this.selectedRun){
+                this.$emit('deselect', this.data.name)
+            } else{
+                    this.$emit('select', this.data.name)
+                } 
+        }
+    },
+    computed:{
+        isSelected(){
+            return this.data.name === this.selectedRun
         }
     }
 }
@@ -69,13 +69,28 @@ let runsList = {
     data: function() {
         return {
             runs: [],
-            count: null
+            count: null,
+            selectedRun: null
         }
     },
     watch: {
         after() {getData(this)}
     },
     methods: {
+        selectRun(run) {
+            this.selectedRun = run;
+            route_arr.forEach((e) => {
+                if (e.options.name == run) {
+                    map.fitBounds(e.getBounds());
+                    e.setStyle({opacity: '1', color: 'red'})
+                } else {e.setStyle({opacity: '.4', color: 'purple'})}
+            })
+        },
+        deselectRun() {
+            this.selectedRun = null;
+            route_arr.forEach((e) => {
+                e.setStyle({opacity: '.4', color: 'purple'})})
+        }
 
     }, mounted() {getData(this)} 
 }

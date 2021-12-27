@@ -1,6 +1,6 @@
 body{
     font-family:'Courier New', Courier, monospace;
-    background-color:rgb(233, 241, 252);
+    background-color:rgb(239, 242, 245);
     margin: 25px;
 }
 
@@ -17,7 +17,10 @@ body{
     overflow-y: scroll;
 }
 
-single-run:hover{
+.run:hover{
+    font-weight: bold;
+}
+.active-run{
     font-weight: bold;
 }
 
