@@ -15,8 +15,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
-    <!-- Using a CDN to access Vue.js package -->
+    <!-- Using a CDN to access Vue.js and Vuex package -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuex@3.6.2/dist/vuex.js"></script>
 
     <!-- Using a CDN to access axios package -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -32,7 +33,7 @@
     
     </div>
 
-<!-- Timeframe selector component template -->
+<!-- TEMPLATE: Timeframe Selector -->
 <script type="text/x-template" id="timeframe-selector-template">
     <div>
     <div class="row justify-content-md-center" id="timeline">
@@ -48,18 +49,26 @@
     </div>
 </script>
 
-<!-- List of runs component template -->
+<!-- TEMPLATE: List of runs -->
 <script type="text/x-template" id="runs-list-template">
     <div class="row justify-content-md-center">
         <div class="col-md-4" id="runs-list">
-            <p>You ran <strong>{{count}}</strong> times this {{timeframe}}:</p>
-            <single-run v-for="run in runs" :data="run" @select="selectRun" @deselect="deselectRun" :selected-run="selectedRun" class="run"></single-run>
+            <p>You have run <strong>{{count}}</strong> times this {{timeframe}}:</p>
+            <single-run v-for="run in runs" :data="run" :selected-run="selectedRun" class="run"></single-run>
+            <!-- <single-run v-for="run in runs" :data="run" @select="selectRun" @deselect="deselectRun" :selected-run="selectedRun" class="run"></single-run> -->
         </div>
-        <div class="col-md-8" id="route-map"></div>
+        <route-map :selected-run="selectedRun" :runs="runs"></route-map>
     </div>
 </script>
 
-<!-- Single run component template -->
+<!-- TEMPLATE: Route map -->
+<script type="text/x-template" id="route-map-template">
+    <div class="col-md-8" id="route-map">
+        <!-- <route v-for"route in routes" :data="route" :selected-run="selectedRun"></route> -->
+    </div>
+</script>
+
+<!-- TEMPLATE: Single run -->
 <script type="text/x-template" id="single-run-template">
     <div @click="select" :class="{'active-run': isSelected}">{{data.name}} ({{getMiles(data.distance)}}mi)</div>
 </script>

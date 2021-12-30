@@ -1,6 +1,33 @@
 var map;
 var route_arr = [];
 
+Vue.component('routeMap', {
+    template: '<div class="col-md-8" id="route-map"></div>',
+    props: {
+        selectedRun: String,
+    },
+    data (){
+        return {
+            center: [42.413306, -71.126423]
+        }},
+    methods: {
+        setMap () {
+            const map = L.map('route-map').setView(this.center, 13);
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox/light-v10',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: 'pk.eyJ1IjoiZ3JhY2VmYWdhbiIsImEiOiJja3gyNmFlY3gwZzFtMnBtdWtzcDYxbmk5In0.XGxf9wDcKw_kxESf6FgaOQ'
+            }).addTo(map);
+        }
+    },
+    mounted () {
+        this.setMap();
+    }
+})
+
 function createMap(data) {
 
     if (map != undefined) map.remove();
