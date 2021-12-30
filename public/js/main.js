@@ -84,7 +84,12 @@ let routeMap = {
             this.routes.forEach((route) => {
                 if (route != null) {
                     route.on('click', () => {
-                        (self.$store.state.selectedRun === route.options.data) ? self.$store.commit('deselectRun') : self.$store.commit('selectRun', route.options.data)
+                        if (self.selectedRoute == route.options.data){
+                            self.$store.commit('deselectRun') 
+                        } else {
+                            self.$store.commit('selectRun', route.options.data)
+                            document.getElementById(self.selectedRoute.id).scrollIntoView({behavior: "smooth", block: "center"});
+                        }
                     })
                     route.addTo(this.map)
                 }
@@ -127,7 +132,12 @@ let singleRun = {
     computed:{
         isSelected() { return this.data === this.selectedRun },
         selectedRun() { return this.$store.state.selectedRun }
-    }
+    },
+    // watch: {
+    //     selectedRun() {
+    //         document.getElementById(this.selectedRun.id).scrollIntoView(true, {behavior: "smooth", block: "center"});
+    //     }
+    // }
 }
 
 //COMPONENT: Runs List

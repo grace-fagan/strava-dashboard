@@ -54,7 +54,7 @@
     <div class="row justify-content-md-center">
         <div class="col-md-4" id="runs-list">
             <p>You have run <strong>{{count}}</strong> times this {{timeframe}}:</p>
-            <single-run v-for="run in runs" :data="run" :selected-run="selectedRun" class="run"></single-run>
+            <single-run v-for="run in runs" :data="run" :selected-run="selectedRun" class="run" :id="run.id"></single-run>
             <!-- <single-run v-for="run in runs" :data="run" @select="selectRun" @deselect="deselectRun" :selected-run="selectedRun" class="run"></single-run> -->
         </div>
         <route-map :selected-run="selectedRun" :runs="runs"></route-map>
