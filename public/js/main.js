@@ -20,14 +20,38 @@ function getTime(timeframe) {
     return afterValue;
 }
 
+//code taken from: https://arumind.com/how-to-generate-an-array-of-weeks-between-two-dates-in-javascript/
+function getDates(startDate, endDate) {
+    let dates = []
+    const addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        };
+    //now our Sunday check
+    let currentDate = startDate
+    console.log(startDate)
+    if (currentDate.getDay() > 1) {
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+    }
+     
+    while (currentDate <= endDate) {
+      let endWeekDate = addDays.call(currentDate, 6);
+      dates.push({after: currentDate.toDateString(), 
+                   before: endWeekDate.toDateString()});
+      currentDate = addDays.call(currentDate, 7);
+     }
+    return dates;
+}
+
 function getData(obj){
     axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + obj.after, {headers: {"Authorization": "Bearer a8d6598b6e7ba3c9ad5fbafa882a887af3afe554"}})
     .then(response => {
         obj.runs = (response.data);
         obj.count = response.data.length;});
-        // createMap(response.data)});
 }
 
+//STORE to hold global state
 const store = new Vuex.Store({
     state: {
       selectedRun: null
@@ -132,18 +156,14 @@ let singleRun = {
     computed:{
         isSelected() { return this.data === this.selectedRun },
         selectedRun() { return this.$store.state.selectedRun }
-    },
-    // watch: {
-    //     selectedRun() {
-    //         document.getElementById(this.selectedRun.id).scrollIntoView(true, {behavior: "smooth", block: "center"});
-    //     }
-    // }
+    }
 }
 
 //COMPONENT: Runs List
 let runsList = {
     template: "#runs-list-template",
     props: {
+        before: Number,
         after: Number,
         timeframe: String
     },
@@ -151,7 +171,7 @@ let runsList = {
         'single-run': singleRun,
         'route-map': routeMap
     },
-    data: function() {
+    data() {
         return {
             runs: [],
             count: null,
@@ -166,11 +186,24 @@ let runsList = {
     mounted() {getData(this)} 
 }
 
+let specificTimeframe = {
+    template: "#specific-timeframe-template",
+    props: {
+        bins: Array
+    },
+    data() {
+        return {
+            specificTime: null,
+        }
+    }
+}
+
 //COMPONENT: Timeframe Selector
 let timeframeSelector = {
     template: "#timeframe-selector-template",
     components: {
-        'runs-list': runsList
+        'runs-list': runsList,
+        'specific-timeframe': specificTimeframe
     },
     data() {
         return {
@@ -179,7 +212,21 @@ let timeframeSelector = {
         };
     },
     computed: {
-        after() {return getTime(this.selectedTime)}
+        after() {return getTime(this.selectedTime)},
+        bins() {
+            switch(this.selectedTime) {
+                case "week":
+                    return getDates((new Date (2021, 0)), (new Date(2022, 0)));
+                    break;
+                case "month":
+                    return Array.from({length: 12}, (item, i) => {
+                        return new Date(2021, i).toLocaleString('en-US', {year: 'numeric', month: 'short'})
+                      });
+                    break;
+                case "year":
+                    return [2020, 2021]
+            }  
+        }
     }
 }
 

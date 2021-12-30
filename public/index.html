@@ -42,11 +42,19 @@
             <option disabled value="">Select</option>
             <option v-for="option in options" :value="option">{{option}}</option>
         </select>
+        <specific-timeframe :bins="bins"></specific-timeframe>
     </div>
     <div>
-        <runs-list :after="after" :timeframe="selectedTime"></runs-list>
+        <runs-list :befeore="null" :after="after" :timeframe="selectedTime"></runs-list>
     </div>
     </div>
+</script>
+
+<!-- TEMPLATE: Specific Timeframe Selector -->
+<script type="text/x-template" id="specific-timeframe-template">
+    <select v-model="specificTime">
+        <option v-for="bin in bins" :value="bin">{{bin}}</option>
+    </select>
 </script>
 
 <!-- TEMPLATE: List of runs -->
@@ -54,8 +62,7 @@
     <div class="row justify-content-md-center">
         <div class="col-md-4" id="runs-list">
             <p>You have run <strong>{{count}}</strong> times this {{timeframe}}:</p>
-            <single-run v-for="run in runs" :data="run" :selected-run="selectedRun" class="run" :id="run.id"></single-run>
-            <!-- <single-run v-for="run in runs" :data="run" @select="selectRun" @deselect="deselectRun" :selected-run="selectedRun" class="run"></single-run> -->
+            <single-run v-for="run in runs" :key="run.id" :data="run" :selected-run="selectedRun" class="run" :id="run.id"></single-run>
         </div>
         <route-map :selected-run="selectedRun" :runs="runs"></route-map>
     </div>
@@ -63,9 +70,7 @@
 
 <!-- TEMPLATE: Route map -->
 <script type="text/x-template" id="route-map-template">
-    <div class="col-md-8" id="route-map">
-        <!-- <route v-for"route in routes" :data="route" :selected-run="selectedRun"></route> -->
-    </div>
+    <div class="col-md-8" id="route-map"></div>
 </script>
 
 <!-- TEMPLATE: Single run -->
