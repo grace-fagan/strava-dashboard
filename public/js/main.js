@@ -1,52 +1,10 @@
-function getTime(timeframe) {
-    let afterValue = new Date();
-
-    //convert time to epoch value
-    switch(timeframe){
-        case "week":
-            //sets the after value to the most recent Monday at midnight
-            let today = new Date();
-            today.setDate(today.getDate() - (today.getDay() + 6) % 7)
-            afterValue = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0).getTime() / 1000;
-            break;
-        
-        case "month":
-            afterValue = new Date(afterValue.getFullYear(), afterValue.getMonth(), 1, 0).getTime() / 1000;
-            break;
-        
-        case "year":
-            afterValue = new Date(afterValue.getFullYear(), 0, 1, 0).getTime() / 1000;
-    }
-    return afterValue;
-}
-
-//code taken from: https://arumind.com/how-to-generate-an-array-of-weeks-between-two-dates-in-javascript/
-function getDates(startDate, endDate) {
-    let dates = []
-    const addDays = function (days) {
-            var date = new Date(this.valueOf());
-            date.setDate(date.getDate() + days);
-            return date;
-        };
-    //now our Sunday check
-    let currentDate = startDate
-    console.log(startDate)
-    if (currentDate.getDay() > 1) {
-        currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
-    }
-     
-    while (currentDate <= endDate) {
-      let endWeekDate = addDays.call(currentDate, 6);
-      dates.push({after: currentDate.toDateString(), 
-                   before: endWeekDate.toDateString()});
-      currentDate = addDays.call(currentDate, 7);
-     }
-    return dates;
-}
-
 function getData(obj){
-    axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + obj.after, {headers: {"Authorization": "Bearer a8d6598b6e7ba3c9ad5fbafa882a887af3afe554"}})
+    axios.get("https://www.strava.com/api/v3/athlete/activities?per_page=200&after=" + obj.after +"&before=" + obj.before, {headers: {"Authorization": "Bearer d182538b987112a597be6d7b973c9006ad696e61"}})
     .then(response => {
+        let distance = (response.data).reduce(function(prev, curr){
+            return prev + curr.distance
+        }, 0)
+        obj.distance = Math.round(distance * 0.000621371192)
         obj.runs = (response.data);
         obj.count = response.data.length;});
 }
@@ -54,7 +12,10 @@ function getData(obj){
 //STORE to hold global state
 const store = new Vuex.Store({
     state: {
-      selectedRun: null
+      selectedRun: null,
+      timeframe: 'week',
+      specificTime: { before: getBeforeValue((new Date()), 'week'),
+                    after: getAfterValue((new Date()), 'week')}
     },
     mutations: {
       selectRun (state, run) {
@@ -62,6 +23,14 @@ const store = new Vuex.Store({
       },
       deselectRun (state) {
           state.selectedRun = null
+      },
+      updateTimeframe(state, time) {
+          state.timeframe = time
+          state.specificTime = {before: getBeforeValue((new Date()), time), after: getAfterValue((new Date()), time)}
+      },
+      updateSpecificTime(state, time) {
+          console.log("updating time to...", time)
+          state.specificTime = time
       }
     }
   })
@@ -118,6 +87,7 @@ let routeMap = {
                     route.addTo(this.map)
                 }
             });
+            //set map to most recent route
             if (this.routes.length != 0) this.map.fitBounds(this.routes[this.routes.length - 1].getBounds());
         }
     },
@@ -164,8 +134,7 @@ let runsList = {
     template: "#runs-list-template",
     props: {
         before: Number,
-        after: Number,
-        timeframe: String
+        after: Number
     },
     components: {
         'single-run': singleRun,
@@ -175,10 +144,12 @@ let runsList = {
         return {
             runs: [],
             count: null,
+            distance: 0
         }
     },
     computed: {
-        selectedRun() { return this.$store.state.selectedRun }
+        selectedRun() { return this.$store.state.selectedRun },
+        selectedTime() { return this.$store.state.timeframe }
     },
     watch: {
         after() {getData(this)}
@@ -186,15 +157,27 @@ let runsList = {
     mounted() {getData(this)} 
 }
 
+//COMPONENT: Specific timeframe
 let specificTimeframe = {
     template: "#specific-timeframe-template",
+    components: {
+        'runs-list': runsList,
+    },
     props: {
         bins: Array
     },
-    data() {
-        return {
-            specificTime: null,
+    methods: {
+        updateSpecificTime(event) {
+            console.log("updating specific time ...")
+            let beforeVal = event.target.value
+            let newTime = this.bins.find(e => e.before == beforeVal)
+            console.log("new time!", newTime)
+            this.$store.commit('updateSpecificTime', newTime)
         }
+    },
+    computed: {
+        selectedTime () { return this.$store.state.timeframe },
+        specificTime () { return this.$store.state.specificTime}
     }
 }
 
@@ -202,29 +185,39 @@ let specificTimeframe = {
 let timeframeSelector = {
     template: "#timeframe-selector-template",
     components: {
-        'runs-list': runsList,
         'specific-timeframe': specificTimeframe
     },
     data() {
         return {
-            selectedTime: 'week',
             options: ['week', 'month', 'year']
         };
     },
+    methods: {
+        updateTimeframe(event) {
+            this.$store.commit('updateTimeframe', event.target.value)
+        }
+    },
     computed: {
-        after() {return getTime(this.selectedTime)},
+        selectedTime () {return this.$store.state.timeframe},
         bins() {
+            let curr_year = new Date().getFullYear()
             switch(this.selectedTime) {
                 case "week":
-                    return getDates((new Date (2021, 0)), (new Date(2022, 0)));
+                    return getWeekBins(new Date((curr_year), 0), (new Date(curr_year + 1, 0)));
                     break;
                 case "month":
-                    return Array.from({length: 12}, (item, i) => {
-                        return new Date(2021, i).toLocaleString('en-US', {year: 'numeric', month: 'short'})
-                      });
+                    months = Array.from({length: 24}, (item, i) => {
+                        return ({before: getBeforeValue(new Date(curr_year - 1, i), 'month'), after: getAfterValue(new Date(curr_year - 1, i), 'month')})
+                    });
+                    console.log(months)
+                    return months;
                     break;
                 case "year":
-                    return [2020, 2021]
+                    years = Array.from({length: 4}, (item, i) => {
+                        return ({before: getBeforeValue(new Date(curr_year + (i - 3), 0), 'year'), after: getAfterValue(new Date(curr_year + (i - 3), 0), 'year')})
+                    })
+                    console.log(years)
+                    return years;
             }  
         }
     }

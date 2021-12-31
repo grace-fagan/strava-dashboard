@@ -38,30 +38,33 @@
     <div>
     <div class="row justify-content-md-center" id="timeline">
         <label>Timeframe:</label>
-        <select v-model="selectedTime" name="timeline">
+        <select v-on:input="updateTimeframe" name="timeline">
             <option disabled value="">Select</option>
             <option v-for="option in options" :value="option">{{option}}</option>
         </select>
+    </div class = "row">
         <specific-timeframe :bins="bins"></specific-timeframe>
-    </div>
-    <div>
-        <runs-list :befeore="null" :after="after" :timeframe="selectedTime"></runs-list>
-    </div>
     </div>
 </script>
 
 <!-- TEMPLATE: Specific Timeframe Selector -->
 <script type="text/x-template" id="specific-timeframe-template">
-    <select v-model="specificTime">
-        <option v-for="bin in bins" :value="bin">{{bin}}</option>
+    <div class="justify-content-md-center">
+    <select v-on:input="updateSpecificTime">
+        <option disabled value="">Select</option>
+        <option v-for="bin in bins" :value="bin.before">{{new Date(bin.after * 1000).toLocaleDateString()}} - {{new Date(bin.before * 1000).toLocaleDateString()}}</option>
     </select>
+    <div>
+        <runs-list :before="specificTime.before" :after="specificTime.after"></runs-list>
+    </div>
+    </div>
 </script>
 
 <!-- TEMPLATE: List of runs -->
 <script type="text/x-template" id="runs-list-template">
     <div class="row justify-content-md-center">
         <div class="col-md-4" id="runs-list">
-            <p>You have run <strong>{{count}}</strong> times this {{timeframe}}:</p>
+            <p>You ran <strong>{{distance}}</strong> miles this {{selectedTime}}:</p>
             <single-run v-for="run in runs" :key="run.id" :data="run" :selected-run="selectedRun" class="run" :id="run.id"></single-run>
         </div>
         <route-map :selected-run="selectedRun" :runs="runs"></route-map>
@@ -80,9 +83,8 @@
 
 <!-- client side JS files -->
 <script src="js/polyline.js"></script>
+<script src="js/time.js"></script>
 <script src="js/main.js"></script>
-<script src="js/map.js"></script>
-<script src="js/list.js"></script>
 
 </body>
 </html>
