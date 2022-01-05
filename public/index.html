@@ -22,6 +22,9 @@
     <!-- Using a CDN to access axios package -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+    <!-- Latest D3.js package -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
 </head>
 <body>
 
@@ -35,14 +38,13 @@
 
 <!-- TEMPLATE: Timeframe Selector -->
 <script type="text/x-template" id="timeframe-selector-template">
-    <div>
     <div class="row justify-content-md-center" id="timeline">
         <label>Timeframe:</label>
         <select v-on:input="updateTimeframe" name="timeline">
             <option disabled value="">Select</option>
             <option v-for="option in options" :value="option">{{option}}</option>
         </select>
-    </div class = "row">
+    <!-- </div class="row"> -->
         <specific-timeframe :bins="bins"></specific-timeframe>
     </div>
 </script>
@@ -50,10 +52,13 @@
 <!-- TEMPLATE: Specific Timeframe Selector -->
 <script type="text/x-template" id="specific-timeframe-template">
     <div class="justify-content-md-center">
+    <div class="row justify-content-md-center">
     <select v-on:input="updateSpecificTime">
         <option disabled value="">Select</option>
         <option v-for="bin in bins" :value="bin.before">{{new Date(bin.after * 1000).toLocaleDateString()}} - {{new Date(bin.before * 1000).toLocaleDateString()}}</option>
     </select>
+    </div>
+    <div id="timeline-chart" class="row justify-content-md-center"></div>
     <div>
         <runs-list :before="specificTime.before" :after="specificTime.after"></runs-list>
     </div>
@@ -67,7 +72,7 @@
             <p>You ran <strong>{{distance}}</strong> miles this {{selectedTime}}:</p>
             <single-run v-for="run in runs" :key="run.id" :data="run" :selected-run="selectedRun" class="run" :id="run.id"></single-run>
         </div>
-        <route-map :selected-run="selectedRun" :runs="runs"></route-map>
+        <route-map id="route-map" :selected-run="selectedRun" :runs="runs"></route-map>
     </div>
 </script>
 

@@ -45,22 +45,23 @@ function getBeforeValue(date, timeframe) {
     }
 }
 
-
 //code taken and edited from: https://arumind.com/how-to-generate-an-array-of-weeks-between-two-dates-in-javascript/
 function getWeekBins(startDate, endDate) {
+    console.log("start: ", startDate.toString(), "end: ", endDate.toString())
     let dates = []
     const addDays = function (days) {
             var date = new Date(this.valueOf());
             date.setDate(date.getDate() + days);
             return date;
         };
+
     //now our Sunday check
     let currentDate = startDate
     currentDate.setDate(currentDate.getDate() - (currentDate.getDay() + 6) % 7);
      
     while (currentDate <= endDate) {
       let endWeekDate = addDays.call(currentDate, 7);
-      dates.push({after: currentDate.valueOf() / 1000, before: endWeekDate.valueOf() / 1000});
+      dates.push({after: currentDate.valueOf() / 1000, before: endWeekDate.valueOf() / 1000, dist: 0 });
       currentDate = addDays.call(currentDate, 7);
      }
     return dates;
