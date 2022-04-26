@@ -3,19 +3,26 @@ import { onMounted } from 'vue'
 
 import {
   cleanUpAuthToken,
-  // AuthGetter,
+  AuthGetter,
+  getUserData,
 } from "@/js/strava-config";
 
 async function authenticate() {
-  const stravaAuthToken = cleanUpAuthToken(location.search);
-  console.log("authenticating");
-  console.log(stravaAuthToken);
-}
 
-// const tokens = await AuthGetter(stravaAuthToken);
-// const accessToken = tokens.access_token;
-// const userID = tokens.athlete.id;
-// const userData = await stravaRequest(stravaAuthToken);
+  // Save the Auth Token
+  const stravaAuthToken = cleanUpAuthToken(location.search);
+
+  // Post Request to Strava (with AuthToken) which returns Refresh Token and and Access Token
+  const tokens = await AuthGetter(stravaAuthToken);
+  const accessToken = tokens.access_token;
+  const userID = tokens.athlete.id;
+
+  console.log("access: ", accessToken, "ID: ", userID)
+
+  //Get user data!
+  const activities = await getUserData(userID, accessToken);
+  console.log(activities);
+}
 
 onMounted(() => {
   authenticate();
