@@ -18,10 +18,10 @@ export const AuthGetter = async (authTok) => {
     }
 }; 
 
-export const getUserData = async (userID, accessToken) => {
+export const getUserData = async (userID, accessToken, page) => {
     try {
         const response = await axios.get(
-            `https://www.strava.com/api/v3/athlete/activities?per_page=1`,
+            `https://www.strava.com/api/v3/athlete/activities?per_page=200&page=${page}`,
             { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         return response;
