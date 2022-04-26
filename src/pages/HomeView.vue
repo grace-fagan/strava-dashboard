@@ -1,6 +1,6 @@
 
 <script setup>
-import HelloWorld from '@/components/HelloWorld.vue'
+import HomePage from '@/components/HomePage.vue'
 
     const clientID = process.env.VUE_APP_CLIENT_ID;
     const redirectURL = "http://localhost:8080/redirect";
@@ -15,7 +15,7 @@ import HelloWorld from '@/components/HelloWorld.vue'
 <template>
   <div class="home">
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-    <HelloWorld msg="Homepage"/>
+    <HomePage msg="Homepage"/>
     <button @click="handleLogin">Connect with Strava</button>
   </div>
 </template>

@@ -38,7 +38,11 @@ async function authenticate() {
 }
 
 onMounted(() => {
-  authenticate();
+  // if (store.userAccess) {
+  //   console.log("I already have an access token!!")
+  // } else {
+    authenticate();
+  //}
 })
 </script>
 

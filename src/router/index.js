@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import StravaRedirect from "../views/StravaRedirect.vue"
-import YourActivities from "../views/YourActivities.vue"
+import HomeView from '../pages/HomeView.vue'
+import StravaRedirect from "../pages/StravaRedirect.vue"
+import YourActivities from "../pages/YourActivities.vue"
 
 const routes = [
   {
