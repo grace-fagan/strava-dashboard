@@ -1,20 +1,27 @@
 import { createStore } from 'vuex'
-import createPersistedState from "vuex-persistedstate";
+import createPersistedState from 'vuex-persistedstate'
 
 const store = createStore({
-    state: {
-        userAccess: null,
-        userActivities: null
+  state: {
+    userAccess: null,
+    userActivities: null,
+    selectedRun: null
+  },
+  mutations: {
+    setUserAccess (state, userAccess) {
+      state.userAccess = userAccess
     },
-    mutations: {
-        setUserAccess(state, userAccess) {
-            state.userAccess = userAccess;
-        },
-        setUserActivities(state, userActivities) {
-            state.userActivities = userActivities;
-        },
+    setUserActivities (state, userActivities) {
+      state.userActivities = userActivities
     },
-    plugins: [createPersistedState()],
+    selectRun (state, selectedRun) {
+      state.selectedRun = selectedRun
+    },
+    deselectRun (state) {
+      state.selectedRun = null
+    }
+  },
+  plugins: [createPersistedState()]
 })
 
-export default store;
+export default store

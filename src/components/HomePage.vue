@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <h1>{{ msg }}</h1>
+    <!-- include map here! -->
   </div>
 </template>
 
@@ -9,6 +10,9 @@ export default {
   name: 'HomePage',
   props: {
     msg: String
+  },
+  setup () {
+
   }
 }
 </script>
