@@ -7,7 +7,7 @@ const store = useStore()
 const activities = computed(() => store.state.userActivities)
 const selectedRun = computed(() => store.state.selectedRun)
 
-var selected
+let selected
 
 const select = (e) => {
   if (this.data === selectedRun.value) {

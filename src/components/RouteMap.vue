@@ -15,8 +15,8 @@ const accessToken = process.env.VUE_APP_MAPBOX_TOKEN
 
 const activities = computed(() => store.state.userActivities)
 const selectedRun = computed(() => store.state.selectedRun)
-var routes = null
-var map = null
+let routes = null
+let map = null
 
 const setMap = () => {
   map = L.map('mapContainer').setView(center, 13)
@@ -79,6 +79,5 @@ onMounted(() => {
 <style scoped>
 #mapContainer {
     width: 80vw;
-    height: 100vh;
 }
 </style>

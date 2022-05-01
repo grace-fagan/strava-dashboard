@@ -4,14 +4,14 @@
 
 <style>
 #app {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #194638;
 }
 
-nav {
+/* nav {
   padding: 30px;
 }
 
@@ -22,5 +22,5 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>
