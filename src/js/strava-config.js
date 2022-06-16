@@ -26,7 +26,7 @@ export const getUserData = async (userID, accessToken, page) => {
     )
     return response
   } catch (error) {
-    console.log(error)
+    console.log('error: ', error)
   }
 }
 

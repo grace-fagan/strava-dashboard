@@ -12,26 +12,28 @@ const activities = computed(() => store.state.userActivities)
 </script>
 
 <template>
-  <div class="title">
-    <h2>Dash! ミ ᕕ( •_•)ᕗ</h2>
-    <!-- <h6>Where ya been?</h6> -->
-  </div>
-  <div class="container border">
-    <RouteMap/>
-    <div class="sidebar">
-      <h3>You've gone on {{activities.length}} runs!</h3>
-      <div class="activities">
-        <RunsList />
+  <div class="container">
+    <div class="title">
+      <h2>Dash! ミ ᕕ( •_•)ᕗ</h2>
+      <!-- <h6>Where ya been?</h6> -->
+    </div>
+    <div class="main border">
+      <RouteMap/>
+      <div class="sidebar">
+        <h3>You've gone on {{activities.length}} runs!</h3>
+        <div class="activities">
+          <RunsList />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
-.title {
-  text-align: left;
+html, body {
+  height: 100%;
 }
+
 .border {
   border: 4px solid navy;
   border-style: solid none solid none
@@ -40,12 +42,19 @@ const activities = computed(() => store.state.userActivities)
 .sidebar {
   border-left: 4px solid navy
 }
+
 .container {
   display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main {
+  display: flex;
+  height: 100%;
 }
 
 .activities {
-  height: 100vh;
   overflow: scroll;
 }
 
